@@ -1,25 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test.c                                             :+:      :+:    :+:   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yachen <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/26 18:11:16 by yachen            #+#    #+#             */
-/*   Updated: 2023/05/26 19:24:21 by yachen           ###   ########.fr       */
+/*   Updated: 2023/05/27 15:08:15 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*ft_mkestr(char *keep, int fd)
+static char	*ft_restofstr(char *buffer)
 {
-	char 	*buffer;
+	int		i;
+	char	*rest;
+
+	i = 0;
+	while (buffer[i] != '\n')
+		i++;
+	rest = (char *)malloc(sizeof(char) * (BUFFER_SIZE - i));
+	while (BUFFER_SIZE - i > 0)
+	{
+		*rest++ = buffer[i];
+		i++;
+	}
+	*rest++ = '\0';
+	return (rest);
+}
+
+static char	*ft_mkestr(char *keep, char *buffer, char *rest, int fd)
+{
 	ssize_t	result;
 
-	buffer = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
-	if (!buffer)
-		return (NULL);
 	result = read(fd, buffer, BUFFER_SIZE);
 	if (result <= 0)
 	{
@@ -31,22 +45,39 @@ static char	*ft_mkestr(char *keep, int fd)
 		if (!keep)
 			keep = ft_strdup(buffer);
 		else
-			ft_strjoint(keep, buffer);
+			keep = ft_strjoint(keep, buffer);
+		read(fd, buffer, BUFFER_SIZE);
 	}
 	if (result == 0)
 		return (keep);
 	else if (!ft_check_str(buffer))
-		ft_strjoint(keep, ft_make_str_n(buffer));
-	free(buffer)
+	{
+		keep = ft_strjoint(keep, ft_make_str_n(buffer));
+		rest = ft_restofstr(buffer);
+	}
+	free(buffer);
 	return (keep);
 }
 
 char	*get_next_line(int fd)
 {
-	static char *keep;
+	static char	*rest;
+	char 		*keep;
+	char		*buffer;
 
 	if (fd < 0 || BUFFER_SIZE == 0)
 		return (NULL);
-	ft_mkestr(keep, fd);
+	keep = NULL;
+	buffer = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
+	if (!buffer)
+		return (NULL);
+	if (!rest)
+		ft_mkestr(keep, buffer, rest,  fd);
+	else
+	{
+		keep = ft_strdup(rest);
+		free(rest);
+		ft_mkestr(keep, buffer, rest, fd);
+	}
 	return (keep);
 }

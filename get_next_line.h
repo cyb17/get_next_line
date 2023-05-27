@@ -6,7 +6,7 @@
 /*   By: yachen <yachen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 14:44:06 by yachen            #+#    #+#             */
-/*   Updated: 2023/05/26 15:07:49 by yachen           ###   ########.fr       */
+/*   Updated: 2023/05/27 13:35:25 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,10 @@
 
 char	*get_next_line(int fd);
 int		ft_check_str(char *str);
-int		ft_strlcat(char *dest, const char *src);
-void	ft_make_str_n(char *dest, char *src);
+int		ft_strlen(char *str);
+void	ft_strcpy(char *dest, char *src);
+char	*ft_strdup(char *str);
+char	*ft_strjoint(char *s1, char *s2);
+char	*ft_make_str_n(char *buffer);
 
 #endif
