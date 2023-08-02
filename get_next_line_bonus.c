@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yachen <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/13 10:20:12 by yachen            #+#    #+#             */
-/*   Updated: 2023/06/13 10:20:43 by yachen           ###   ########.fr       */
+/*   Created: 2023/06/13 10:14:41 by yachen            #+#    #+#             */
+/*   Updated: 2023/06/13 10:16:20 by yachen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_read_line(int fd, char	*str)
 {
@@ -97,17 +97,17 @@ char	*ft_get_restline(char *str)
 char	*get_next_line(int fd)
 {
 	char		*line;
-	static char	*str;
+	static char	*str[1024];
 
 	line = NULL;
 	if (fd < 0 || BUFFER_SIZE == 0)
 		return (NULL);
-	str = ft_read_line(fd, str);
-	if (!str)
+	str[fd] = ft_read_line(fd, str[fd]);
+	if (!str[fd])
 		return (NULL);
-	line = ft_get_line(str);
+	line = ft_get_line(str[fd]);
 	if (line == NULL)
 		return (NULL);
-	str = ft_get_restline(str);
+	str[fd] = ft_get_restline(str[fd]);
 	return (line);
 }
